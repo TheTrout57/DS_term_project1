@@ -1,10 +1,6 @@
 #include <iostream>
 
 using namespace std;
-struct pos{
-    int row,col;
-    pos(int r, int c):row{r}, col{c}{}
-};
 
 class TetrisChain{
     public:
@@ -15,6 +11,8 @@ class TetrisChain{
         last->down = last;
         last->up = last;
     }
+    bool isFull(rowNode*);
+    void deleteNode(rowNode*);
     void insetFront();
     void printBoard();
     void insertT1(int);
@@ -35,6 +33,20 @@ class TetrisChain{
     int rows, cols;
     int currentTop;
 };
+
+bool TetrisChain::isFull(rowNode* a){
+    for (int i = 1; i < cols; i++){
+        if (i = 0)
+            return false;
+    }
+    return true;
+}
+
+void TetrisChain::deleteNode(rowNode* a){
+    a->down->up = a->up;
+    a->up->down = a->down;
+    delete a;
+}
 
 void TetrisChain::insetFront(){
     rowNode *newNode = new rowNode(cols);
@@ -98,5 +110,8 @@ void TetrisChain::insertT1(int col){
             }
         }
     }
-    
 }
+
+
+
+

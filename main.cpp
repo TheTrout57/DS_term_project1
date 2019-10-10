@@ -1,17 +1,15 @@
 #include <iostream>
-#include "Tetris.h"
+#include "Tetris_v.h"
 
 using namespace std;
 
 int main()
 {
     TetrisChain a(5,15);
-    a.insertT1(1);
-    a.insertT1(4);
-    a.insertT1(7);
-    a.insertT1(10);
-    a.insertT1(13);
-    a.printBoard();
-    
+    int arr[] = {6, 10, 11, 12};
+    TetrisChain block = a.createChain(2, arr);
+    a.addChain(block);
+    Node* start = a.getfirst();
+    a.printBoard(start);
     return 0;
 }
