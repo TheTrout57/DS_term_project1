@@ -36,19 +36,18 @@ class TetrisChain{
     int rows, cols, chainLengh;
 };
 
-TetrisChain TetrisChain::createChain(int lengh, int* a){
+TetrisChain TetrisChain::createChain(int lengh, int* a){  
     TetrisChain e(rows, cols);
     for (int i = 1; i <= lengh; i++){
         if (e.first){
             e.last->link = new Node(cols);
             e.last = e.last->link;
-            e.last->link = 0;
         }else {
             e.first = e.last = new Node(cols);
         }
     }
     for (int i = 0; i < 4; i++){
-        Node* ptr = first;
+        Node* ptr = e.first;
         for (int j = 0; j < a[i] / cols; j++, ptr = ptr->link);
         ptr->arr[a[i] % cols] = 1;
     }
@@ -61,21 +60,22 @@ void TetrisChain::addChain(TetrisChain a){
         for (int i = chainLengh; i >= 1; i--){
             Node *ptr = first, *aPtr = a.first;
             for (int j = 1; j < i; j++, ptr = ptr->link);
-            for (int j = 1; j <= a.chainLengh && ptr != 0; j++, aPtr = aPtr->link, ptr = ptr->link){
+            Node *iteratePtr = ptr;
+            for (int j = 1; j <= a.chainLengh && iteratePtr != 0; j++, aPtr = aPtr->link, iteratePtr = iteratePtr->link){
                 for (int k = 0; k < cols; k++){
-                    if (aPtr->arr[k] == 1 && ptr->arr[k] == 1){
+                    if (aPtr->arr[k] == 1 && iteratePtr->arr[k] == 1){
                         illegal = true;
                         break;
                     }
                 }
                 if (illegal)
-                    break;
+                    break;    
             }
             if (illegal){
                 Node* temp;
-                for (aPtr = a.first; ptr->link != 0 && aPtr != a.last; aPtr = temp, ptr = ptr->link){
+                for (aPtr = a.first; ptr->link != 0 && aPtr != 0; aPtr = temp, ptr = ptr->link){
                     for (int i = 0; i < cols; i++){
-                        ptr->arr[i] += aPtr->link->arr[i];
+                        ptr->link->arr[i] += aPtr->arr[i];
                     }
                     temp = aPtr->link;
                     a.deleteRow(a.first);
@@ -86,10 +86,21 @@ void TetrisChain::addChain(TetrisChain a){
                 break;
             }
         }
+        if (!illegal){
+            Node *aPtr = a.first, *temp;
+            for (Node *ptr = first; ptr != 0 && aPtr != 0; aPtr = temp, ptr = ptr->link){
+                for (int i = 0; i < cols; i++){
+                    ptr->arr[i] += aPtr->arr[i];
+                }
+                temp = aPtr->link;
+                a.deleteRow(a.first);
+            }
+            if (aPtr != 0){
+                concatenate(a);
+            }
+        }
     }else {
-        first = a.first;
-        last = a.last;
-        chainLengh = a.chainLengh;
+        concatenate(a);
     }
 }
 void TetrisChain::concatenate(TetrisChain& a){
@@ -116,6 +127,7 @@ void TetrisChain::deleteRow(Node* a, Node* b){
         first = a->link;
     else
         b->link = a->link;
+    chainLengh--;
     delete a;    
 }
 void TetrisChain::printBoard(Node* ptr){
