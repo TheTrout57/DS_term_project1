@@ -10,7 +10,7 @@ int main()
     fstream file;
     ofstream ofile;
     file.open("Tetris.data", ios::in);
-    ofile.open("Tetris.output", ios::out);
+    ofile.open("Tetris.final", ios::out);
     int rows, cols, col;
     string move;
     file >> rows >> cols;
